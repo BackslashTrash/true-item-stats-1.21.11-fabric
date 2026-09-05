@@ -3,17 +3,17 @@
 	"id": "true-item-stats",
 	"version": "${version}",
 	"name": "True Item Stats",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "Mod that shows easily comparable tooltips for armour and weapons, hold ctrl over items for extra info.",
 	"authors": [
-		"Me!"
+		"BackslashTrash"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
+		"homepage": "N/A",
 		"sources": "https://github.com/FabricMC/fabric-example-mod"
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/true-item-stats/icon.png",
-	"environment": "*",
+	"environment": "client",
 	"entrypoints": {
 		"main": [
 			"net.backslashtrash.TrueItemStats"
