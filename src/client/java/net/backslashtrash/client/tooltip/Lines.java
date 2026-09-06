@@ -10,6 +10,15 @@ import net.minecraft.network.chat.TextColor;
  */
 public final class Lines {
 
+    /**
+     * Smallest change worth calling a change.
+     *
+     * <p>Tied to the display format below: it sits just under the smallest value
+     * two decimals can show, so nothing ever renders as a non-zero number coloured
+     * as if it were neutral. Change the format and change this with it.
+     */
+    public static final double EPSILON = 0.005;
+
     private Lines() {
     }
 
@@ -21,7 +30,7 @@ public final class Lines {
                         .withStyle(s -> s.withColor(TextColor.fromRgb(valueRgb))));
     }
 
-    /** An indented sub-line, for situational or per-profile detail. */
+    /** An indented sub-line, for per-damage-type detail. */
     public static Component sub(String label, String value, int labelRgb, int valueRgb) {
         return stat("  " + label, value, labelRgb, valueRgb);
     }
@@ -34,21 +43,39 @@ public final class Lines {
         return Component.literal(text).withStyle(ChatFormatting.WHITE, ChatFormatting.ITALIC);
     }
 
-    /** Signed number, coloured green for better and red for worse. */
-    public static Component delta(String label, double value, String unit) {
-        int colour = value > 0.01 ? Palette.BETTER
-                : value < -0.01 ? Palette.WORSE
+    /**
+     * A relative change, coloured green for better and red for worse.
+     *
+     * <p>Relative rather than absolute on purpose: effective health gains are
+     * convex, so a first piece of armour adds far less raw effective health than a
+     * fourth one does. As a ratio it reads the same whether you are naked or in
+     * full netherite.
+     */
+    public static Component deltaPercent(String label, double percent) {
+        int colour = percent > EPSILON ? Palette.BETTER
+                : percent < -EPSILON ? Palette.WORSE
                 : Palette.NEUTRAL;
-        String sign = value > 0.01 ? "+" : "";
-        return stat(label, String.format("%s%.1f%s", sign, value, unit),
-                Palette.ARMOUR_LABEL, colour);
+        return stat(label, signedPercent(percent), Palette.ARMOUR_LABEL, colour);
+    }
+
+    /** Signed percentage at two decimals, e.g. "+1.63% health". */
+    public static String signedPercent(double percent) {
+        String sign = percent > EPSILON ? "+" : "";
+        return String.format("%s%.2f%% health", sign, percent);
+    }
+
+    /** Colour for a change of this size and direction. */
+    public static int colourFor(double change) {
+        return change > EPSILON ? Palette.BETTER
+                : change < -EPSILON ? Palette.WORSE
+                : Palette.ARMOUR_VALUE;
     }
 
     public static String percent(double value) {
-        return String.format("%.1f%%", value);
+        return String.format("%.2f%%", value);
     }
 
     public static String multiplier(double value) {
-        return Double.isInfinite(value) ? "immune" : String.format("x%.1f", value);
+        return Double.isInfinite(value) ? "immune" : String.format("x%.2f", value);
     }
 }

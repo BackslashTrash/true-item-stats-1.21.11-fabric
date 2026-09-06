@@ -12,7 +12,7 @@ public final class DamageMath {
 
     /** Reference hit used when a single representative number is needed. */
     /** Reference hit: a sword blow from another player, which is what these games are. */
-    public static final double REFERENCE_HIT = 6.0;;
+    public static final double REFERENCE_HIT = 8.0;
 
     /** Enchantment protection is capped at this many points (= 80% reduction). */
     public static final double EPF_CAP = 20.0;
